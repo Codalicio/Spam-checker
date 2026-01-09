@@ -51,6 +51,12 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not registered!" });
     }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Incorrect password!" });
+    }
   } catch (err) {
     return res.json({ message: err.message });
   }
