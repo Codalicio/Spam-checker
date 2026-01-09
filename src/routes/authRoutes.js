@@ -26,7 +26,7 @@ router.post("/register", async (req, res) => {
         .json({ message: "Phone number already registered!" });
     }
 
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.create({
       data: { name, phone, email, password: hashedPassword },
@@ -57,7 +57,15 @@ router.post("/login", async (req, res) => {
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Incorrect password!" });
     }
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    return res.json({ message: token });
   } catch (err) {
     return res.json({ message: err.message });
   }
 });
+
+module.exports = router;
