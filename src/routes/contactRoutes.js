@@ -21,4 +21,17 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    const contacts = await prisma.contact.findMany({
+      where: {
+        ownerId: req.user.userId,
+      },
+    });
+    return res.json(contacts);
+  } catch (err) {
+    return res.json({ message: err.message });
+  }
+});
+
 module.exports = router;
