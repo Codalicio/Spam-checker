@@ -12,3 +12,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String   @unique
+  email     String?
+  password  String
+  contacts  Contact[]
+  createdAt DateTime @default(now())
+}
+
+model Contact {
+  id      String @id @default(uuid())
+  ownerId String
+  name    String
+  phone   String
+  owner   User   @relation(fields: [ownerId], references: [id])
+}
+
+model SpamReport {
+  id         String   @id @default(uuid())
+  phone      String
+  reportedBy String
+  createdAt  DateTime @default(now())
+}
