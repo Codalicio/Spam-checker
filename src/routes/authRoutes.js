@@ -37,3 +37,21 @@ router.post("/register", async (req, res) => {
     return res.json({ message: err.message });
   }
 });
+
+// user login API :
+router.post("/login", async (req, res) => {
+  try {
+    const { phone, password } = req.body;
+
+    // fetch user by phone :
+    const user = await prisma.user.findUnique({
+      where: { phone },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "User not registered!" });
+    }
+  } catch (err) {
+    return res.json({ message: err.message });
+  }
+});
