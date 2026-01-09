@@ -4,10 +4,14 @@ const { authMiddleware } = require("../middlewares/authMiddleware.js");
 const router = express.Router();
 
 router.get("/protected", authMiddleware, (req, res) => {
-  res.json({
-    message: "You are authenticated",
-    user: req.user,
-  });
+  try {
+    return res.json({
+      message: "You are authenticated",
+      user: req.user,
+    });
+  } catch (err) {
+    return res.json({ message: err.message });
+  }
 });
 
 module.exports = router;
