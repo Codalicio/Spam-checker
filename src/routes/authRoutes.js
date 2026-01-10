@@ -5,7 +5,7 @@ const prisma = require("../client.js");
 
 const router = express.Router();
 
-// user register API :
+// register route :
 router.post("/register", async (req, res) => {
   try {
     const { name, phone, password, email } = req.body;
@@ -29,12 +29,21 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.create({
-      data: { name, phone, email, password: hashedPassword },
+      data: { name, phone, email: email || null, password: hashedPassword },
     });
 
-    res.status(200).json({ message: "User registered successfully." });
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      user: {
+        id: user.id,
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+      },
+    });
   } catch (err) {
-    return res.json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 
