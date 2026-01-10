@@ -47,12 +47,18 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// user login API :
+// user login route :
 router.post("/login", async (req, res) => {
   try {
     const { phone, password } = req.body;
 
-    // fetch user by phone :
+    if (!phone || !password) {
+      return res
+        .status(400)
+        .json({ message: "Phone number and password are required" });
+    }
+
+    // find user by phone :
     const user = await prisma.user.findUnique({
       where: { phone },
     });
