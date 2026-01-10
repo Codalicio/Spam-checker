@@ -28,12 +28,22 @@ model User {
   @@index([name])   // Index on name for search functionality
 }
 
+// Contact Model - Represents entries in a user's phone book
 model Contact {
   id      String @id @default(uuid())
   ownerId String
   name    String
   phone   String
-  owner   User   @relation(fields: [ownerId], references: [id])
+
+  // Relationship to User
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  // fields: [ownerId] = This column in Contact table
+  // references: [id] = Points to id column in User table
+  // onDelete: Cascade = If user is deleted, delete their contacts too
+
+  @@index([ownerId])  // Fast lookup: "Get all contacts for user X"
+  @@index([phone])    // Fast lookup: "Find contacts with this phone"
+  @@index([name])     // Fast lookup: "Search contacts by name"
 }
 
 model SpamReport {
