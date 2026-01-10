@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { phone } = req.body;
+    const userId = req.user.userId;
 
     if (!phone) {
       return res.status(400).json({ message: "Phone number is required!" });
@@ -15,7 +16,7 @@ router.post("/", authMiddleware, async (req, res) => {
     const alreadyReported = await prisma.spamReport.findFirst({
       where: {
         phone,
-        reportedBy: req.user.userId,
+        reportedBy: userId,
       },
     });
 
@@ -28,13 +29,23 @@ router.post("/", authMiddleware, async (req, res) => {
     await prisma.spamReport.create({
       data: {
         phone,
-        reportedBy: req.user.userId,
+        reportedBy: userId,
       },
     });
 
-    res.status(201).json({ message: "Number marked as spam" });
+    const totalReports = await prisma.spamReport.count({
+      where: { phone },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Number marked as spam",
+      totalReports: totalReports,
+    });
   } catch (err) {
-    return res.json({ message: err.message });
+    return res
+      .status(500)
+      .json({ message: "An error occurred while reporting spam" });
   }
 });
 
