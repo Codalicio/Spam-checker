@@ -46,9 +46,18 @@ model Contact {
   @@index([name])     // Fast lookup: "Search contacts by name"
 }
 
+// SpamReport Model - Tracks who marked which number as spam
 model SpamReport {
   id         String   @id @default(uuid())
   phone      String
   reportedBy String
   createdAt  DateTime @default(now())
+
+  // Relationship to User
+  reporter User @relation(fields: [reportedBy], references: [id], onDelete: Cascade)
+
+  // Composite unique constraint - Same user can't report same number twice
+  @@unique([phone, reportedBy])
+  
+  @@index([phone])  // Fast lookup: "How many reports for this number?"
 }
