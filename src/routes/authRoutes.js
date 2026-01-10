@@ -63,14 +63,18 @@ router.post("/login", async (req, res) => {
       where: { phone },
     });
 
+    // Generic error message to prevent user enumeration
+    // Don't tell attackers if phone exists or password is wrong
+    const invalidMessage = "Invalid phone number or password";
+
     if (!user) {
-      return res.status(400).json({ message: "User not registered!" });
+      return res.status(400).json({ message: invalidMessage });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Incorrect password!" });
+      return res.status(401).json({ message: invalidMessage });
     }
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
