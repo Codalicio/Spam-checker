@@ -76,7 +76,7 @@ router.get("/", authMiddleware, async (req, res) => {
 
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-    const contactId = req.params.id;
+    const contactId = Number(req.params.id);
 
     if (isNaN(contactId)) {
       return res.status(400).json({ message: "Invalid contact ID" });
@@ -90,12 +90,9 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     });
 
     if (!contact) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "Contact not found or you don't have permission to delete it",
-        });
+      return res.status(404).json({
+        message: "Contact not found or you don't have permission to delete it",
+      });
     }
 
     await prisma.contact.delete({
