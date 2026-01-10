@@ -74,4 +74,43 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const contactId = req.params.id;
+
+    if (isNaN(contactId)) {
+      return res.status(400).json({ message: "Invalid contact ID" });
+    }
+
+    const contact = await prisma.contact.findFirst({
+      where: {
+        id: contactId,
+        ownerId: req.user.userId,
+      },
+    });
+
+    if (!contact) {
+      return res
+        .status(404)
+        .json({
+          message:
+            "Contact not found or you don't have permission to delete it",
+        });
+    }
+
+    await prisma.contact.delete({
+      where: { id: contactId },
+    });
+
+    return res.json({
+      success: true,
+      message: "Contact deleted successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "An error occurred while deleting contact",
+    });
+  }
+});
+
 module.exports = router;
