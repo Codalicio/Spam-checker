@@ -49,4 +49,39 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
+router.delete("/", authMiddleware, async (req, res) => {
+  try {
+    const { phone } = req.body;
+    const userId = req.user.userId;
+
+    const spamReport = await prisma.spamReport.findFirst({
+      where: {
+        phone,
+        reportedBy: userId,
+      },
+    });
+
+    if (!spamReport) {
+      return res
+        .status(404)
+        .json({ message: "You haven't marked this number as spam" });
+    }
+
+    await prisma.spamReport.delete({
+      where: {
+        id: spamReport.id,
+      },
+    });
+
+    return res.json({
+      success: true,
+      message: "Spam report removed",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "An error occurred while removing spam report",
+    });
+  }
+});
+
 module.exports = router;
