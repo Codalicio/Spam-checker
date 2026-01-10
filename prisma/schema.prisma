@@ -1,26 +1,31 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// Generator - Creates the Prisma Client
 generator client {
   provider = "prisma-client-js"
 }
 
+// Datasource - Tells prisma where our database is
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql" // We are using PostgreSQL
+  url      = env("DATABASE_URL") // Read connection string from .env
 }
 
+// User model - Represents a registered user
 model User {
   id        String   @id @default(uuid())
   name      String
   phone     String   @unique
   email     String?
   password  String
-  contacts  Contact[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // Relationships - How this table connects to others
+  contacts  Contact[] // One user can have many contacts
+  spamReports SpamReport[] // One user can report many spam numbers 
+
+  // Indexes - Make searches faster
+  @@index([phone])  // Index on phone for quick lookups
+  @@index([name])   // Index on name for search functionality
 }
 
 model Contact {
