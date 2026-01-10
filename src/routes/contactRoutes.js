@@ -13,6 +13,19 @@ router.post("/", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "name and phone are required!" });
     }
 
+    const existingContact = await prisma.contact.findFirst({
+      where: {
+        ownerId: userId,
+        phone: phone,
+      },
+    });
+
+    if (existingContact) {
+      return res.status(400).json({
+        message: "You already have this number in your contacts",
+      });
+    }
+
     const contact = await prisma.contact.create({
       data: { name, phone, ownerId: req.user.userId },
     });
