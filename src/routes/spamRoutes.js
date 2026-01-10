@@ -1,6 +1,7 @@
 const express = require("express");
 const prisma = require("../client.js");
 const { authMiddleware } = require("../middlewares/authMiddleware.js");
+const { calculateSpamLikelihood } = require("../utils/utils.js");
 
 const router = express.Router();
 
@@ -80,6 +81,30 @@ router.delete("/", authMiddleware, async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       message: "An error occurred while removing spam report",
+    });
+  }
+});
+
+// GET SPAM REPORTS FOR A NUMBER
+router.get("/:phone", authMiddleware, async (req, res) => {
+  try {
+    const phone = req.params.phone;
+
+    const reportCount = await prisma.spamReport.count({
+      where: { phone },
+    });
+
+    const spamLikelihood = calculateSpamLikelihood(reportCount);
+
+    return res.json({
+      success: true,
+      phone: phone,
+      reportCount: reportCount,
+      spamLikelihood: spamLikelihood,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "An error occurred while fetching spam information",
     });
   }
 });
