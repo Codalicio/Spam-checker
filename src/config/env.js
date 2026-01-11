@@ -24,7 +24,7 @@ const validateEnv = () => {
     console.error(`JWT_SECRET must be at least 32 characters long!`);
     console.error(`Generate a strong secret with : `);
     console.error(
-      `node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'`
+      `node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"`
     );
     process.exit(1);
   }
