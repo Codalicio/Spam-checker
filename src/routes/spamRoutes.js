@@ -14,6 +14,18 @@ router.post("/", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Phone number is required!" });
     }
 
+    // Check if the phone belongs to the current user(that is logged in)
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { phone: true },
+    });
+
+    if (user && user.phone === phone) {
+      return res
+        .status(400)
+        .json({ message: "You cannot mark your own number as spam!" });
+    }
+
     const alreadyReported = await prisma.spamReport.findFirst({
       where: {
         phone,
