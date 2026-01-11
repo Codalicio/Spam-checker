@@ -98,14 +98,6 @@ router.get("/name", authMiddleware, async (req, res) => {
     const startsWith = [];
     const contains = [];
 
-    // for (const result of results) {
-    //   if (result.name.toLowerCase().startsWith(query.toLowerCase())) {
-    //     startsWith.push(result);
-    //   } else {
-    //     contains.push(result);
-    //   }
-    // }
-
     results.forEach((result) => {
       if (result.name.toLowerCase().startsWith(query.toLowerCase())) {
         startsWith.push(result);
