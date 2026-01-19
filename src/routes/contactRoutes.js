@@ -1,5 +1,4 @@
 const express = require("express");
-const prisma = require("../client.js");
 const { authMiddleware } = require("../middlewares/authMiddleware.js");
 const {
   createContact,
