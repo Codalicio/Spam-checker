@@ -1,3 +1,6 @@
+const prisma = require("../../client.js");
+const bcrypt = require("bcrypt");
+
 exports.signUp = async (req, res) => {
   try {
     const { name, phone, password, email } = req.body;
