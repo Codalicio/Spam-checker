@@ -69,7 +69,9 @@ exports.getContacts = async (req, res) => {
       contacts: contacts,
     });
   } catch (err) {
-    return res.json({ message: "An error occurred while fetching contacts" });
+    return res
+      .status(500)
+      .json({ message: "An error occurred while fetching contacts" });
   }
 };
 
