@@ -62,6 +62,7 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
+// Remove Spam Report From a Number :
 router.delete("/", authMiddleware, async (req, res) => {
   try {
     const { phone } = req.body;
@@ -97,7 +98,7 @@ router.delete("/", authMiddleware, async (req, res) => {
   }
 });
 
-// GET SPAM REPORTS FOR A NUMBER
+// Get Spam Report counts and spam-likelihood for a number :
 router.get("/:phone", authMiddleware, async (req, res) => {
   try {
     const phone = req.params.phone;
