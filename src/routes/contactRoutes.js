@@ -14,6 +14,7 @@ router.post("/", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "name and phone are required!" });
     }
 
+    // To prevent duplicate contacts with the same phone number for the same user
     const existingContact = await prisma.contact.findFirst({
       where: {
         ownerId: userId,
