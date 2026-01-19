@@ -3,6 +3,7 @@ const prisma = require("../client.js");
 const { authMiddleware } = require("../middlewares/authMiddleware.js");
 const {
   createContact,
+  getContacts,
 } = require("../controllers/contact/contactController.js");
 
 const router = express.Router();
@@ -11,36 +12,7 @@ const router = express.Router();
 router.post("/", authMiddleware, createContact);
 
 // Get all contacts :
-router.get("/", authMiddleware, async (req, res) => {
-  try {
-    const contacts = await prisma.contact.findMany({
-      where: {
-        ownerId: req.user.userId,
-      },
-      orderBy: {
-        name: "asc",
-      },
-      select: {
-        id: true,
-        name: true,
-        phone: true,
-        createdAt: true,
-        updatedAt: true,
-        owner: {
-          select: { id: true, name: true },
-        },
-      },
-    });
-
-    return res.json({
-      success: true,
-      count: contacts.length,
-      contacts: contacts,
-    });
-  } catch (err) {
-    return res.json({ message: "An error occurred while fetching contacts" });
-  }
-});
+router.get("/", authMiddleware, getContacts);
 
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
