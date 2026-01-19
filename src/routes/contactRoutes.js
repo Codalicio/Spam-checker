@@ -19,6 +19,7 @@ router.get("/", authMiddleware, getContacts);
 // Delete a contact :
 router.delete("/:id", authMiddleware, deleteContact);
 
+// Update a contact :
 router.put("/:id", authMiddleware, updateContact);
 
 module.exports = router;
