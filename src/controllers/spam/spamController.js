@@ -58,3 +58,40 @@ exports.markNumberAsSpam = async (req, res) => {
       .json({ message: "An error occurred while reporting spam" });
   }
 };
+
+exports.removeNumberAsSpam = async (req, res) => {
+  try {
+    const { phone } = req.body;
+    const userId = req.user.userId;
+
+    // Finds the spam report record for the given phone number and user :
+    const spamReport = await prisma.spamReport.findFirst({
+      where: {
+        phone,
+        reportedBy: userId,
+      },
+    });
+
+    if (!spamReport) {
+      return res
+        .status(404)
+        .json({ message: "You haven't marked this number as spam" });
+    }
+
+    // Delete a specific spam report by its id :
+    await prisma.spamReport.delete({
+      where: {
+        id: spamReport.id,
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Spam report removed",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "An error occurred while removing spam report",
+    });
+  }
+};
