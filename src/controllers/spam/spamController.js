@@ -1,4 +1,5 @@
 const prisma = require("../../client.js");
+const { calculateSpamLikelihood } = require("../../utils/utils.js");
 
 exports.markNumberAsSpam = async (req, res) => {
   try {
@@ -92,6 +93,31 @@ exports.removeNumberAsSpam = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       message: "An error occurred while removing spam report",
+    });
+  }
+};
+
+exports.findSpamLikelihood = async (req, res) => {
+  try {
+    const phone = req.params.phone;
+
+    // Counts number of times this phone number has been reported in total:
+    const reportCount = await prisma.spamReport.count({
+      where: { phone },
+    });
+
+    // Calls the helper function calculateSpamLikelihood to get the spam likelihood details :
+    const spamLikelihood = calculateSpamLikelihood(reportCount);
+
+    return res.status(200).json({
+      success: true,
+      phone: phone,
+      reportCount: reportCount,
+      spamLikelihood: spamLikelihood,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "An error occurred while fetching spam information",
     });
   }
 };
