@@ -1,4 +1,5 @@
 const express = require("express");
+const helmet = require("helmet");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes.js");
 const testRoutes = require("./routes/testRoutes.js");
@@ -8,6 +9,7 @@ const searchRoutes = require("./routes/searchRoutes.js");
 
 const app = express();
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
