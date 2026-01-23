@@ -22,6 +22,7 @@ exports.markNumberAsSpam = async (req, res) => {
         .json({ message: "You cannot mark your own number as spam!" });
     }
 
+    // Prevent duplicate spam reports by same user :
     const alreadyReported = await prisma.spamReport.findFirst({
       where: {
         phone,
