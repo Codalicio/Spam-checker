@@ -1,5 +1,5 @@
 const prisma = require("../../client.js");
-const bcrypt = require("bcrypt");
+const { hashPassword } = require("../../utils/hash.js");
 
 exports.signUp = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ exports.signUp = async (req, res) => {
         .json({ message: "Phone number already registered!" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
 
     const user = await prisma.user.create({
       data: { name, phone, email: email || null, password: hashedPassword },
