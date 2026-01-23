@@ -1,6 +1,6 @@
 const prisma = require("../../client.js");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const { comparePassword } = require("../../utils/hash.js");
+const { generateToken } = require("../../utils/jwt.js");
 
 exports.login = async (req, res) => {
   try {
@@ -25,16 +25,14 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: invalidMessage });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await comparePassword(password, user.password);
 
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Invalid password!" });
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = generateToken(user.id);
 
     return res.json({
       success: true,
