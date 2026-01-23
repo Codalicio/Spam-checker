@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const { verifyToken } = require("../utils/jwt");
 
 exports.authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -25,8 +25,8 @@ exports.authMiddleware = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const decoded = verifyToken(token);
+    req.user = { userId: decoded.userId };
     next();
   } catch (error) {
     return res.status(401).json({
