@@ -22,27 +22,23 @@ exports.markNumberAsSpam = async (req, res) => {
         .json({ message: "You cannot mark your own number as spam!" });
     }
 
-    // Prevent duplicate spam reports by same user :
-    const alreadyReported = await prisma.spamReport.findFirst({
-      where: {
-        phone,
-        reportedBy: userId,
-      },
-    });
-
-    if (alreadyReported) {
-      return res
-        .status(400)
-        .json({ message: "You have already marked this number as spam" });
-    }
-
     // Add a new spam report record to the database, storing the phone and who reported it :
-    await prisma.spamReport.create({
-      data: {
-        phone,
-        reportedBy: userId,
-      },
-    });
+    try {
+      await prisma.spamReport.create({
+        data: {
+          phone,
+          reportedBy: userId,
+        },
+      });
+    } catch (err) {
+      // Prisma unique constraint violation
+      if (err.code === "P2002") {
+        return res.status(400).json({
+          message: "You have already marked this number as spam!",
+        });
+      }
+      return res.json(err.message);
+    }
 
     // Counts how many total spam reports exist for the phone number across all users :
     const totalReports = await prisma.spamReport.count({
@@ -66,26 +62,22 @@ exports.removeNumberAsSpam = async (req, res) => {
     const { phone } = req.body;
     const userId = req.user.userId;
 
-    // Finds the spam report record for the given phone number and user :
-    const spamReport = await prisma.spamReport.findFirst({
+    if (!phone) {
+      return res.status(400).json({ message: "Phone number is required!" });
+    }
+
+    const result = await prisma.spamReport.deleteMany({
       where: {
         phone,
         reportedBy: userId,
       },
     });
 
-    if (!spamReport) {
+    if (result.count === 0) {
       return res
         .status(404)
-        .json({ message: "You haven't marked this number as spam" });
+        .json({ message: "You haven't marked this number as spam!" });
     }
-
-    // Delete a specific spam report by its id :
-    await prisma.spamReport.delete({
-      where: {
-        id: spamReport.id,
-      },
-    });
 
     return res.status(200).json({
       success: true,
