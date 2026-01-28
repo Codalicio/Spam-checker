@@ -149,7 +149,9 @@ npm install
 Create a .env file with:
 
 DATABASE_URL=postgresql://...
+
 JWT_SECRET=your_secret_key
+
 PORT=3000
 
 4️⃣ Run database migrations
