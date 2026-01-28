@@ -138,10 +138,12 @@ This value is included in search responses
 
 ⚙️ Setup Instructions
 1️⃣ Clone the repository
+
 git clone <repository-url>
 cd project-folder
 
 2️⃣ Install dependencies
+
 npm install
 
 3️⃣ Configure environment variables
@@ -155,10 +157,13 @@ JWT_SECRET=your_secret_key
 PORT=3000
 
 4️⃣ Run database migrations
+
 npx prisma migrate dev
+
 npx prisma generate
 
 5️⃣ Start the server
+
 npm run dev
 
 ✅ Notes
