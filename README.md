@@ -162,7 +162,13 @@ npx prisma migrate dev
 
 npx prisma generate
 
-5️⃣ Start the server
+5️⃣ Database Seeding
+
+To populate the database with sample data for testing:
+
+npx prisma db seed
+
+* Start the server
 
 npm run dev
 
