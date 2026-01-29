@@ -5,9 +5,9 @@ async function main() {
   console.log("Seeding database...");
 
   // Clear existing data (important for re-runs)
-  await prisma.user.deleteMany();
-  await prisma.contact.deleteMany();
   await prisma.spamReport.deleteMany();
+  await prisma.contact.deleteMany();
+  await prisma.user.deleteMany();
 
   // Create Users:
   const hashedPassword = await bcrypt.hash("password@123", 10);
