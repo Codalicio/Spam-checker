@@ -174,8 +174,17 @@ npm run dev
 
 ✅ Notes
 
+Future Improvements
+
+- Input normalization for phone numbers
+- Rate limiting on spam and search endpoints
+- Pagination for large search results
+- Structured logging
+- Caching spam likelihood for performance
+
 Code follows clean structure and best practices for backend development
 
 🏁 Conclusion
 
 This backend system fulfills all requirements specified in the task PDF, including authentication, data privacy, spam detection, and search functionality. The implementation focuses on correctness, clarity, and maintainability.
+MMMMMMMMMMMM
