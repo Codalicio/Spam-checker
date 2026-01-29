@@ -37,7 +37,7 @@ exports.markNumberAsSpam = async (req, res) => {
           message: "You have already marked this number as spam!",
         });
       }
-      return res.json(err.message);
+      return res.status(500).json("An error occurred while reporting spam");
     }
 
     // Counts how many total spam reports exist for the phone number across all users :
